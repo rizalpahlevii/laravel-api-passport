@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductCategoryRequest;
 use App\Http\Resources\ProductCollection;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
@@ -37,11 +38,8 @@ class ProductCategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductCategoryRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required|max:50',
-        ]);
         $productCategory  = ProductCategory::create($request->all());
         return response()->json(['status' => 'success', 'data' => $productCategory]);
     }
@@ -76,11 +74,8 @@ class ProductCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ProductCategory $productCategory)
+    public function update(ProductCategoryRequest $request, ProductCategory $productCategory)
     {
-        $this->validate($request, [
-            'name' => 'required|max:50',
-        ]);
         $productCategory->slug = NULL;
         $productCategory->update($request->all());
         return response()->json(['status' => 'success', 'data' => $productCategory]);

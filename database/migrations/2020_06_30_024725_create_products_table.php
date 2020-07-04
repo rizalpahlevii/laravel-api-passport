@@ -19,7 +19,7 @@ class CreateProductsTable extends Migration
             $table->integer('selling_price');
             $table->integer('purchase_price');
             $table->integer('first_stock');
-            $table->integer('stok_out');
+            $table->integer('stock_out');
             $table->integer('last_stock');
             $table->timestamps();
         });
