@@ -5,12 +5,18 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductCategoryRequest;
 use App\Http\Resources\ProductCollection;
+use App\Interfaces\ProductCategoryInterface;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ProductCategoryController extends Controller
 {
+    protected  $productCategoryInterface;
+    public function __construct(ProductCategoryInterface $productCategoryInterface)
+    {
+        $this->productCategoryInterface = $productCategoryInterface;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -18,8 +24,7 @@ class ProductCategoryController extends Controller
      */
     public function index()
     {
-        $productCategories = ProductCategory::get();
-        return (new ProductCollection($productCategories));
+        return $this->productCategoryInterface->getAllProductCategories();
     }
 
     /**
@@ -40,8 +45,7 @@ class ProductCategoryController extends Controller
      */
     public function store(ProductCategoryRequest $request)
     {
-        $productCategory  = ProductCategory::create($request->all());
-        return response()->json(['status' => 'success', 'data' => $productCategory]);
+        return $this->productCategoryInterface->requestUser($request);
     }
 
     /**
@@ -52,8 +56,7 @@ class ProductCategoryController extends Controller
      */
     public function show($slug)
     {
-        $productCategory = ProductCategory::findBySlug($slug);
-        return response()->json(['status' => 'success', 'data' => $productCategory]);
+        return $this->productCategoryInterface->getProductCategoryBySlug($slug);
     }
 
     /**
@@ -74,11 +77,9 @@ class ProductCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductCategoryRequest $request, ProductCategory $productCategory)
+    public function update(ProductCategoryRequest $request, $id)
     {
-        $productCategory->slug = NULL;
-        $productCategory->update($request->all());
-        return response()->json(['status' => 'success', 'data' => $productCategory]);
+        return $this->productCategoryInterface->requestUser($request, $id);
     }
 
     /**
@@ -87,9 +88,8 @@ class ProductCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductCategory $productCategory)
+    public function destroy($id)
     {
-        $productCategory->delete();
-        return response()->json(['status' => 'success', 'data' => $productCategory]);
+        return $this->productCategoryInterface->deleteProductCategory($id);
     }
 }
